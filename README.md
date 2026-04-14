@@ -35,6 +35,3 @@ This notebook evolves the architecture from the first notebook into a **Llama 2*
     ```
 
 ---
-
-### Suggested Follow-up
-Would you like me to add a technical comparison table between the two architectures to the README to highlight exactly how the math changes for the **RMS Norm** or **RoPE**?
