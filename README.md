@@ -31,6 +31,14 @@ This notebook builds on the Llama 2 architecture from the previous notebook and 
     * **Incremental Forward Pass:** The model's `forward` method detects cached token length and only processes uncached tokens, avoiding redundant computation.
     * **Inference Benchmark:** Includes a side-by-side timing comparison of generation with and without the KV cache, demonstrating a measurable speedup (~1.11x on 200 tokens with a 10.7M parameter model).
 
+### 4. [llama2_with_gqa.ipynb](https://github.com/vRunB/LLM-basics/blob/main/llama2_with_gqa.ipynb)
+This notebook replaces Multi-Head Attention (MHA) with **Grouped-Query Attention (GQA)**, the technique used by Llama 2 70B, Llama 3, and Mistral. Instead of each query head having its own dedicated Key and Value projections, groups of query heads share a single KV head — reducing KV cache memory and parameter count while preserving model quality.
+* **Key Enhancements:**
+    * **Grouped KV Projections:** Q is projected to `n_head` heads, while K and V are only projected to `n_kv_head` heads (e.g., 6 query heads share 2 KV heads).
+    * **`repeat_interleave` Expansion:** KV heads are expanded at attention time using `repeat_interleave` to match the query head count, keeping the cached tensors compact.
+    * **Unified Attention Module:** Replaces the per-head `ModuleList` pattern with a single `GroupedQueryAttention` class that handles all heads in one batched operation.
+    * **Parameter Comparison:** Includes a detailed breakdown of MHA vs GQA parameter and KV cache savings (66.7% KV cache reduction with `n_head=6, n_kv_head=2`).
+
 ## Getting Started
 
 1.  **Clone the Repo:**
