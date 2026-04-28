@@ -23,6 +23,14 @@ This notebook evolves the architecture from the first notebook into a **Llama 2*
     * **RMSNorm (Root Mean Square Layer Normalization):** A more computationally efficient alternative to standard LayerNorm that simplifies the normalization process.
     * **SwiGLU Activation Function:** (If implemented) Replacing ReLU with SwiGLU for improved training stability and performance.
 
+### 3. [llama2_with_kvcache.ipynb](https://github.com/vRunB/LLM-basics/blob/main/llama2_with_kvcache.ipynb)
+This notebook builds on the Llama 2 architecture from the previous notebook and adds **KV (Key-Value) Caching** to speed up autoregressive inference. During generation, the model caches previously computed key and value tensors so that each new token only requires a single forward pass rather than reprocessing the entire sequence.
+* **Key Enhancements:**
+    * **KV Cache in Attention Heads:** Each `Head` maintains `cache_k` and `cache_v` buffers. During generation, new key/value projections are appended to the cache, and attention is computed against the full cached history.
+    * **Position-Aware RoPE:** The `compute_rope` function accepts a `start_pos` parameter so that newly generated tokens receive correct rotary positional encodings relative to their absolute position in the sequence.
+    * **Incremental Forward Pass:** The model's `forward` method detects cached token length and only processes uncached tokens, avoiding redundant computation.
+    * **Inference Benchmark:** Includes a side-by-side timing comparison of generation with and without the KV cache, demonstrating a measurable speedup (~1.11x on 200 tokens with a 10.7M parameter model).
+
 ## Getting Started
 
 1.  **Clone the Repo:**
